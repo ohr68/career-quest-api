@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="MassTransit.Abstractions" Version="9.0.1"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\CareerQuest.Common.Domain\CareerQuest.Common.Domain.csproj" />
+    </ItemGroup>
+</Project>

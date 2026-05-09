@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\CareerQuest.Common.Infrastructure\CareerQuest.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\CareerQuest.Modules.Users.Application\CareerQuest.Modules.Users.Application.csproj" />
+    <ProjectReference Include="..\CareerQuest.Modules.Users.Presentation\CareerQuest.Modules.Users.Presentation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\Migrations\" />
+  </ItemGroup>
+</Project>

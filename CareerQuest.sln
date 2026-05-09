@@ -1,0 +1,132 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docker-compose", "docker-compose.dcproj", "{4AF79501-F785-4B98-8EE5-54BE186D67A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ACC32990-CB04-4E55-8AA7-D2710685C7E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{451B7CB4-D019-48DA-9802-E425A89CB356}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{498F4CEB-BCD6-4176-964A-90D7B1E246E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{DC29CA25-BDBF-4740-8C9D-B36BBB5EBAB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{E78D7144-9074-4964-A48B-7C23674B6527}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CareerManagement", "CareerManagement", "{C26D2B42-A0E9-419C-B319-3C512E6C0BD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Common.Domain", "src\Common\CareerQuest.Common.Domain\CareerQuest.Common.Domain.csproj", "{7AF13554-0594-410A-886F-21FCC13B9B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Common.Application", "src\Common\CareerQuest.Common.Application\CareerQuest.Common.Application.csproj", "{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Common.Infrastructure", "src\Common\CareerQuest.Common.Infrastructure\CareerQuest.Common.Infrastructure.csproj", "{6F667C05-B533-47FF-A485-8879B0A17EEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Common.Presentation", "src\Common\CareerQuest.Common.Presentation\CareerQuest.Common.Presentation.csproj", "{10F82CF8-FFB1-4B77-8B2D-04264692EB26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Users.Domain", "src\Modules\Users\CareerQuest.Modules.Users.Domain\CareerQuest.Modules.Users.Domain.csproj", "{BE3E9A84-D46F-4988-813E-E398BC53D431}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Users.Application", "src\Modules\Users\CareerQuest.Modules.Users.Application\CareerQuest.Modules.Users.Application.csproj", "{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Users.Infrastructure", "src\Modules\Users\CareerQuest.Modules.Users.Infrastructure\CareerQuest.Modules.Users.Infrastructure.csproj", "{F9F61173-A5A6-4C88-B74A-6F53C2367D4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Users.Presentation", "src\Modules\Users\CareerQuest.Modules.Users.Presentation\CareerQuest.Modules.Users.Presentation.csproj", "{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Users.IntegrationEvents", "src\Modules\Users\CareerQuest.Modules.Users.IntegrationEvents\CareerQuest.Modules.Users.IntegrationEvents.csproj", "{6CB7FB07-8A90-456D-B22E-D8C001713FFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Api", "src\API\CareerQuest.Api\CareerQuest.Api.csproj", "{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Players", "Players", "{BC5DD489-192E-47A4-A56C-7F351D364204}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Players.Domain", "src\Modules\Players\CareerQuest.Modules.Players.Domain\CareerQuest.Modules.Players.Domain.csproj", "{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Players.Application", "src\Modules\Players\CareerQuest.Modules.Players.Application\CareerQuest.Modules.Players.Application.csproj", "{F636387B-A193-444E-BC7B-91E957C31E4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Players.Infrastructure", "src\Modules\Players\CareerQuest.Modules.Players.Infrastructure\CareerQuest.Modules.Players.Infrastructure.csproj", "{E951D079-9CF8-4D47-A1A7-CAD930F180DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerQuest.Modules.Players.Presentation", "src\Modules\Players\CareerQuest.Modules.Players.Presentation\CareerQuest.Modules.Players.Presentation.csproj", "{E3789649-AF76-4C2A-98E6-B14E46E65F57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{451B7CB4-D019-48DA-9802-E425A89CB356} = {ACC32990-CB04-4E55-8AA7-D2710685C7E6}
+		{498F4CEB-BCD6-4176-964A-90D7B1E246E4} = {ACC32990-CB04-4E55-8AA7-D2710685C7E6}
+		{DC29CA25-BDBF-4740-8C9D-B36BBB5EBAB2} = {ACC32990-CB04-4E55-8AA7-D2710685C7E6}
+		{E78D7144-9074-4964-A48B-7C23674B6527} = {DC29CA25-BDBF-4740-8C9D-B36BBB5EBAB2}
+		{C26D2B42-A0E9-419C-B319-3C512E6C0BD9} = {DC29CA25-BDBF-4740-8C9D-B36BBB5EBAB2}
+		{7AF13554-0594-410A-886F-21FCC13B9B25} = {498F4CEB-BCD6-4176-964A-90D7B1E246E4}
+		{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D} = {498F4CEB-BCD6-4176-964A-90D7B1E246E4}
+		{6F667C05-B533-47FF-A485-8879B0A17EEE} = {498F4CEB-BCD6-4176-964A-90D7B1E246E4}
+		{10F82CF8-FFB1-4B77-8B2D-04264692EB26} = {498F4CEB-BCD6-4176-964A-90D7B1E246E4}
+		{BE3E9A84-D46F-4988-813E-E398BC53D431} = {E78D7144-9074-4964-A48B-7C23674B6527}
+		{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF} = {E78D7144-9074-4964-A48B-7C23674B6527}
+		{F9F61173-A5A6-4C88-B74A-6F53C2367D4A} = {E78D7144-9074-4964-A48B-7C23674B6527}
+		{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB} = {E78D7144-9074-4964-A48B-7C23674B6527}
+		{6CB7FB07-8A90-456D-B22E-D8C001713FFA} = {E78D7144-9074-4964-A48B-7C23674B6527}
+		{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01} = {451B7CB4-D019-48DA-9802-E425A89CB356}
+		{BC5DD489-192E-47A4-A56C-7F351D364204} = {DC29CA25-BDBF-4740-8C9D-B36BBB5EBAB2}
+		{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB} = {BC5DD489-192E-47A4-A56C-7F351D364204}
+		{F636387B-A193-444E-BC7B-91E957C31E4A} = {BC5DD489-192E-47A4-A56C-7F351D364204}
+		{E951D079-9CF8-4D47-A1A7-CAD930F180DD} = {BC5DD489-192E-47A4-A56C-7F351D364204}
+		{E3789649-AF76-4C2A-98E6-B14E46E65F57} = {BC5DD489-192E-47A4-A56C-7F351D364204}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AF13554-0594-410A-886F-21FCC13B9B25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AF13554-0594-410A-886F-21FCC13B9B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AF13554-0594-410A-886F-21FCC13B9B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AF13554-0594-410A-886F-21FCC13B9B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CDDAADD-CF9A-4C43-B8B4-8442C373FF9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F667C05-B533-47FF-A485-8879B0A17EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F667C05-B533-47FF-A485-8879B0A17EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F667C05-B533-47FF-A485-8879B0A17EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F667C05-B533-47FF-A485-8879B0A17EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F82CF8-FFB1-4B77-8B2D-04264692EB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F82CF8-FFB1-4B77-8B2D-04264692EB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F82CF8-FFB1-4B77-8B2D-04264692EB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F82CF8-FFB1-4B77-8B2D-04264692EB26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3E9A84-D46F-4988-813E-E398BC53D431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3E9A84-D46F-4988-813E-E398BC53D431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3E9A84-D46F-4988-813E-E398BC53D431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3E9A84-D46F-4988-813E-E398BC53D431}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9F4E07-8EC2-4795-9DCB-CE72B4E914AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9F61173-A5A6-4C88-B74A-6F53C2367D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F61173-A5A6-4C88-B74A-6F53C2367D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F61173-A5A6-4C88-B74A-6F53C2367D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F61173-A5A6-4C88-B74A-6F53C2367D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1DB0D14-7D0D-47D3-8ADA-21AB14666FFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB7FB07-8A90-456D-B22E-D8C001713FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB7FB07-8A90-456D-B22E-D8C001713FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB7FB07-8A90-456D-B22E-D8C001713FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB7FB07-8A90-456D-B22E-D8C001713FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7CB188C-8C70-4C1E-BA27-44B1EED9FD01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8575D4-ADA7-4B30-BC0E-54AECDDF27EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F636387B-A193-444E-BC7B-91E957C31E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F636387B-A193-444E-BC7B-91E957C31E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F636387B-A193-444E-BC7B-91E957C31E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F636387B-A193-444E-BC7B-91E957C31E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E951D079-9CF8-4D47-A1A7-CAD930F180DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E951D079-9CF8-4D47-A1A7-CAD930F180DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E951D079-9CF8-4D47-A1A7-CAD930F180DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E951D079-9CF8-4D47-A1A7-CAD930F180DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3789649-AF76-4C2A-98E6-B14E46E65F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3789649-AF76-4C2A-98E6-B14E46E65F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3789649-AF76-4C2A-98E6-B14E46E65F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3789649-AF76-4C2A-98E6-B14E46E65F57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

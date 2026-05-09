@@ -1,0 +1,71 @@
+services:
+  career.quest.api:
+    image: ${DOCKER_REGISTRY-}career.questapi
+    container_name: career.quest.Api
+    build:
+      context: .
+      dockerfile: src/API/CareerQuest.Api/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    networks:
+      - career.quest_network
+  
+  career.quest.database:
+    image: postgres:latest
+    container_name: career.quest.Database
+    environment:
+      - POSTGRES_DB=career.quest
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - career.quest-database-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - career.quest_network
+  
+  career.quest.seq:
+    image: datalust/seq:latest
+    container_name: career.quest.Seq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    networks:
+      - career.quest_network
+  
+  career.quest.redis:
+    image: redis:latest
+    container_name: career.quest.Redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - career.quest_network
+  
+  career.quest.identity:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: career.quest.Identity
+    command: start-dev --import-realm
+    environment:
+      - KC_HEALTH_ENABLED=true
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+      - ./.files:/opt/keycloak/data/import
+    ports:
+      - "18080:8080"
+      - "9000:9000"
+    networks:
+      - career.quest_network
+
+networks:
+  career.quest_network:
+    driver: bridge
+
+volumes:
+  career.quest-database-data:

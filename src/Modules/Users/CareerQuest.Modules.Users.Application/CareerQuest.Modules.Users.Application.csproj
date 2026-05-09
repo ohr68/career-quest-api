@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\CareerQuest.Common.Application\CareerQuest.Common.Application.csproj" />
+    <ProjectReference Include="..\CareerQuest.Modules.Users.Domain\CareerQuest.Modules.Users.Domain.csproj" />
+    <ProjectReference Include="..\CareerQuest.Modules.Users.IntegrationEvents\CareerQuest.Modules.Users.IntegrationEvents.csproj" />
+  </ItemGroup>
+</Project>

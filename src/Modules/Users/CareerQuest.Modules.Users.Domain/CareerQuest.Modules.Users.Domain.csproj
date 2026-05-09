@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Common\CareerQuest.Common.Domain\CareerQuest.Common.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>
