@@ -46,7 +46,7 @@ public static class UsersModule
 
             services.AddTransient<KeyCloakAuthDelegatingHandler>();
 
-            services.AddHttpClient<KeyCloakClient>((serviceProvider, httpClient) =>
+            services.AddHttpClient<KeyCloakAdminClient>((serviceProvider, httpClient) =>
                 {
                     KeyCloakOptions keyCloakOptions = serviceProvider
                         .GetRequiredService<IOptions<KeyCloakOptions>>().Value;
@@ -54,6 +54,14 @@ public static class UsersModule
                     httpClient.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
                 })
                 .AddHttpMessageHandler<KeyCloakAuthDelegatingHandler>();
+
+            services.AddHttpClient<KeyCloakClient>((serviceProvider, httpClient) =>
+            {
+                KeyCloakOptions keyCloakOptions = serviceProvider
+                    .GetRequiredService<IOptions<KeyCloakOptions>>().Value;
+
+                httpClient.BaseAddress = new Uri(keyCloakOptions.TokenUrl);
+            });
 
             services.AddTransient<IIdentityProviderService, IdentityProviderService>();
 

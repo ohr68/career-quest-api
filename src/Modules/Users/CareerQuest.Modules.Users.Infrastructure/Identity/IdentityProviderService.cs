@@ -6,10 +6,65 @@ using Microsoft.Extensions.Logging;
 namespace CareerQuest.Modules.Users.Infrastructure.Identity;
 
 internal sealed class IdentityProviderService(
+    KeyCloakAdminClient keyCloakAdminClient,
     KeyCloakClient keyCloakClient,
     ILogger<IdentityProviderService> logger) : IIdentityProviderService
 {
     private const string PasswordCredentialType = "Password";
+
+    public async Task<Result<AuthResponse>> AuthenticateAsync(LoginModel login,
+        CancellationToken cancellationToken = default)
+    {
+        var authRequest = new AuthRequest(login.Email, login.Password);
+
+        try
+        {
+            TokenResponse authResult = await keyCloakClient.AuthenticateUserAsync(authRequest, cancellationToken);
+
+            return new AuthResponse(
+                authResult.AccessToken,
+                authResult.ExpiresIn,
+                authResult.RefreshToken,
+                authResult.RefreshTokenExpiresIn
+            );
+        }
+        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            logger.LogError(e, "User authentication failed.");
+
+            return Result.Failure<AuthResponse>(IdentityProviderErrors.EmailNotFound);
+        }
+        catch (HttpRequestException e)
+        {
+            logger.LogError(e, "User authentication failed.");
+
+            return Result.Failure<AuthResponse>(IdentityProviderErrors.EmailNotFound);
+        }
+    }
+
+    public async Task<Result<AuthResponse>> RefreshTokenAsync(string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        var refreshTokenRequest = new RefreshTokenRequest(refreshToken);
+
+        try
+        {
+            TokenResponse authResult = await keyCloakClient.RefreshTokenAsync(refreshTokenRequest, cancellationToken);
+
+            return new AuthResponse(
+                authResult.AccessToken,
+                authResult.ExpiresIn,
+                authResult.RefreshToken,
+                authResult.RefreshTokenExpiresIn
+            );
+        }
+        catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            logger.LogError(e, "User authentication failed.");
+
+            return Result.Failure<AuthResponse>(IdentityProviderErrors.InvalidRefreshToken);
+        }
+    }
 
     public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)
     {
@@ -29,7 +84,7 @@ internal sealed class IdentityProviderService(
 
         try
         {
-            string identityId = await keyCloakClient.RegisterUserAsync(userRepresentation, cancellationToken);
+            string identityId = await keyCloakAdminClient.RegisterUserAsync(userRepresentation, cancellationToken);
 
             return identityId;
         }

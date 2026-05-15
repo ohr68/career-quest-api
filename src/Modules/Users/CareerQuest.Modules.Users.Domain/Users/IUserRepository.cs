@@ -2,7 +2,8 @@
 
 public interface IUserRepository
 {
-    Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmailAsNoTrackingAsync(string email, CancellationToken cancellationToken = default);
 
     void Insert(User user);
 }

@@ -1,5 +1,8 @@
-﻿namespace CareerQuest.Modules.Players.Domain.Players;
+﻿using System.Text.Json.Serialization;
 
+namespace CareerQuest.Modules.Players.Domain.Players;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PlayerSpecializationType
 {
     DistributedSystems = 1,
@@ -12,10 +15,12 @@ public enum PlayerSpecializationType
     SignalR = 8,
     Docker = 9,
     OpenTelemetry = 10,
-    PostgreSql = 11,
+    PostgresSql = 11,
     Redis = 12,
     SystemDesign = 13,
     IntegrationArchitecture = 14,
     PerformanceOptimization = 15,
     ResiliencePatterns = 16,
+    BackendScalability = 17,
+    FrontendIntegration = 18,
 }

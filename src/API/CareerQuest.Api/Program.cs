@@ -2,12 +2,15 @@ using System.Reflection;
 using CareerQuest.Api.Extensions;
 using CareerQuest.Api.Middleware;
 using CareerQuest.Common.Application;
+using CareerQuest.Common.Application.Authorization;
 using CareerQuest.Common.Infrastructure;
+using CareerQuest.Common.Infrastructure.Authorization;
 using CareerQuest.Common.Infrastructure.Configuration;
 using CareerQuest.Common.Presentation.Endpoints;
 using CareerQuest.Modules.Players.Infrastructure;
 using CareerQuest.Modules.Users.Application;
 using CareerQuest.Modules.Users.Infrastructure;
+using CareerQuest.Modules.Users.Infrastructure.Authorization;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -50,6 +53,9 @@ builder.Services.AddInfrastructure(
     ],
     databaseConnectionString,
     redisConnectionString);
+
+builder.Services.AddScoped<IUserAuthorizationProvider, UserAuthorizationProvider>();
+builder.Services.Decorate<IUserAuthorizationProvider, CachedAuthorizationProvider>();
 
 builder.Configuration.AddModuleConfiguration(["users", "players"]);
 

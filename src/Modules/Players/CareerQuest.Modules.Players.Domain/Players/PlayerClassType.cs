@@ -1,5 +1,8 @@
-﻿namespace CareerQuest.Modules.Players.Domain.Players;
+﻿using System.Text.Json.Serialization;
 
+namespace CareerQuest.Modules.Players.Domain.Players;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PlayerClassType
 {
     SystemsEngineer = 1,

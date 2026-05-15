@@ -1,9 +1,16 @@
-﻿namespace CareerQuest.Modules.Players.Domain.Players;
+﻿using System.Text.Json.Serialization;
 
+namespace CareerQuest.Modules.Players.Domain.Players;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CareerStage
 {
-    Employee = 1,
-    Freelancer = 2,
-    Consultant = 3,
-    Independent = 4,
+    Student = 1,
+    Junior = 2,
+    MidLevel = 3,
+    Senior = 4,
+    Lead = 5,
+    Principal = 6,
+    Freelancer = 7,
+    Consultant = 8,
 }

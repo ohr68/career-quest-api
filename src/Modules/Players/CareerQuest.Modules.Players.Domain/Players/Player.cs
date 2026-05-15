@@ -30,9 +30,16 @@ public sealed class Player : Entity
 
     public PlayerProgression? Progression { get; private set; }
 
-    public PlayerStatistics Statistics { get; private set; }
+    public PlayerStatistics? Statistics { get; private set; }
 
-    public PlayerStreak Streak { get; private set; }
+    public PlayerStreak? Streak { get; private set; }
+
+    public bool IsProfileCompleted =>
+        Progression is not null &&
+        Statistics is not null &&
+        Streak is not null &&
+        _classes.Count > 0 &&
+        _specializations.Count > 0;
 
     public IReadOnlyCollection<PlayerClass> Classes =>
         _classes.ToList();
@@ -99,7 +106,9 @@ public sealed class Player : Entity
     public void CompleteProfile(
         string? headline,
         Uri? avatarUrl,
-        CareerStage careerStage)
+        CareerStage careerStage,
+        IReadOnlyCollection<PlayerClassType> playerClassTypes,
+        IReadOnlyCollection<PlayerSpecializationType> playerSpecializationTypes)
     {
         if (Progression is not null)
         {
@@ -121,6 +130,17 @@ public sealed class Player : Entity
                 Id,
                 TitleType.AnonymousDeveloper,
                 true));
+
+
+        foreach (PlayerClassType playerClassType in playerClassTypes)
+        {
+            AddClass(playerClassType);
+        }
+
+        foreach (PlayerSpecializationType playerSpecializationType in playerSpecializationTypes)
+        {
+            AddSpecialization(playerSpecializationType);
+        }
 
         Touch();
 

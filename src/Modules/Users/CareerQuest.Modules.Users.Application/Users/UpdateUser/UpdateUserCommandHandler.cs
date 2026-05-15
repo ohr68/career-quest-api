@@ -10,7 +10,7 @@ internal sealed class UpdateUserCommandHandler(IUserRepository userRepository, I
 {
     public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        User? user = await userRepository.GetAsync(request.UserId, cancellationToken);
+        User? user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {

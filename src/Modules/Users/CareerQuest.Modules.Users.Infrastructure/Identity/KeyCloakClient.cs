@@ -1,39 +1,58 @@
 ﻿using System.Net.Http.Json;
+using Microsoft.Extensions.Options;
 
 namespace CareerQuest.Modules.Users.Infrastructure.Identity;
 
-internal sealed class KeyCloakClient(HttpClient httpClient)
+internal sealed class KeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOptions> options)
 {
-    internal async Task<string> RegisterUserAsync(UserRepresentation user,
+    private const string PasswordGrantType = "password";
+    private readonly KeyCloakOptions _options = options.Value;
+
+
+    internal async Task<TokenResponse> AuthenticateUserAsync(AuthRequest authRequest,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync(
-            "users",
-            user,
+        var authRequestParameters = new KeyValuePair<string, string>[]
+        {
+            new("client_id", _options.ConfidentialClientId),
+            new("client_secret", _options.ConfidentialClientSecret),
+            new("grant_type", PasswordGrantType),
+            new("username", authRequest.Username),
+            new("password", authRequest.Password),
+        };
+
+        using var authRequestContent = new FormUrlEncodedContent(authRequestParameters);
+
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(
+            string.Empty,
+            authRequestContent,
             cancellationToken);
 
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        return ExtractIdentityIdFromLocationHeader(httpResponseMessage);
+        return await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken);
     }
 
-    private static string ExtractIdentityIdFromLocationHeader(HttpResponseMessage httpResponseMessage)
+    internal async Task<TokenResponse> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest,
+        CancellationToken cancellationToken = default)
     {
-        const string usersSegmentName = "users/";
-
-        string? locationHeader = httpResponseMessage.Headers.Location?.PathAndQuery;
-
-        if (locationHeader is null)
+        var refreshTokenRequestParameters = new KeyValuePair<string, string>[]
         {
-            throw new InvalidOperationException("Location header is null");
-        }
+            new("client_id", _options.ConfidentialClientId),
+            new("client_secret", _options.ConfidentialClientSecret),
+            new("grant_type", PasswordGrantType),
+            new("refresh_token", refreshTokenRequest.RefreshToken),
+        };
 
-        int userSegmentValueIndex = locationHeader.IndexOf(
-            usersSegmentName,
-            StringComparison.InvariantCultureIgnoreCase);
+        using var refreshTokenRequestContent = new FormUrlEncodedContent(refreshTokenRequestParameters);
 
-        string identityId = locationHeader.Substring(userSegmentValueIndex + usersSegmentName.Length);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(
+            string.Empty,
+            refreshTokenRequestContent,
+            cancellationToken);
 
-        return identityId;
+        httpResponseMessage.EnsureSuccessStatusCode();
+
+        return await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken);
     }
 }

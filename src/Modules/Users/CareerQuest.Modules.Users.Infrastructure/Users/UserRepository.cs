@@ -6,9 +6,16 @@ namespace CareerQuest.Modules.Users.Infrastructure.Users;
 
 internal sealed class UserRepository(UsersDbContext context) : IUserRepository
 {
-    public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await context.Users.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
+
+    public async Task<User?> GetByEmailAsNoTrackingAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await context.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
     public void Insert(User user)
