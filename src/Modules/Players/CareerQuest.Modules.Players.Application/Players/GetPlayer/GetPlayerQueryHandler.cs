@@ -53,7 +53,7 @@ internal sealed class GetPlayerQueryHandler(IDbConnectionFactory dbConnectionFac
             FROM players.players p
 
             LEFT JOIN players.player_progressions pp
-                ON pp.id = p.id
+                ON pp.player_id = p.id
 
             LEFT JOIN players.player_statistics ps
                 ON ps.id = p.id

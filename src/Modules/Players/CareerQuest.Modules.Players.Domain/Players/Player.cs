@@ -110,7 +110,7 @@ public sealed class Player : Entity
         IReadOnlyCollection<PlayerClassType> playerClassTypes,
         IReadOnlyCollection<PlayerSpecializationType> playerSpecializationTypes)
     {
-        if (Progression is not null)
+        if (Progression is not null && Statistics is not null && Streak is not null)
         {
             return;
         }
@@ -124,6 +124,13 @@ public sealed class Player : Entity
         Statistics = PlayerStatistics.Create(Id);
 
         Streak = PlayerStreak.Create(Id);
+
+        PlayerTitle? existing = _titles.FirstOrDefault(x => x.TitleType == TitleType.AnonymousDeveloper);
+
+        if (existing is not null)
+        {
+            return;
+        }
 
         _titles.Add(
             PlayerTitle.Create(
@@ -191,7 +198,9 @@ public sealed class Player : Entity
 
     public void UnlockTitle(TitleType titleType)
     {
-        if (_titles.Any(x => x.TitleType == titleType))
+        PlayerTitle? existing = _titles.FirstOrDefault(x => x.TitleType == titleType);
+
+        if (existing is not null)
         {
             return;
         }

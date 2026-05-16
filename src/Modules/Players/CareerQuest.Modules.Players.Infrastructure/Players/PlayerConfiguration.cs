@@ -10,31 +10,31 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
     {
         builder.ToTable("players");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(p => p.Id);
 
-        builder.Property(x => x.DisplayName)
+        builder.Property(p => p.DisplayName)
             .HasMaxLength(400)
             .IsRequired();
 
-        builder.Property(x => x.Email)
+        builder.Property(p => p.Email)
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(x => x.Headline)
+        builder.Property(p => p.Headline)
             .HasMaxLength(500);
 
-        builder.Property(x => x.CareerStage)
+        builder.Property(p => p.CareerStage)
             .HasConversion<string>()
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.Property(x => x.JoinedAtUtc)
+        builder.Property(p => p.JoinedAtUtc)
             .IsRequired();
 
-        builder.Property(x => x.LastActiveAtUtc)
+        builder.Property(p => p.LastActiveAtUtc)
             .IsRequired();
 
-        builder.Property(x => x.AvatarUrl)
+        builder.Property(p => p.AvatarUrl)
             .HasConversion(
                 x => x == null ? null : x.ToString(),
                 x => string.IsNullOrWhiteSpace(x)
@@ -42,100 +42,76 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
                     : new Uri(x))
             .HasMaxLength(2048);
 
-        builder.HasIndex(x => x.Email)
+        builder.HasIndex(p => p.Email)
             .IsUnique();
 
-        builder.HasIndex(x => x.DisplayName);
+        builder.HasIndex(p => p.DisplayName);
 
-        builder.HasIndex(x => x.CareerStage);
+        builder.HasIndex(p => p.CareerStage);
 
-        builder.Ignore(x => x.CurrentTitle);
+        builder.Ignore(p => p.CurrentTitle);
 
-        builder.OwnsOne(x => x.Progression, progression =>
-        {
-            progression.ToTable("player_progressions");
+        builder.HasOne(p => p.Progression)
+            .WithOne()
+            .HasForeignKey<PlayerProgression>(p => p.PlayerId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-            progression.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
-
-            progression.HasKey(x => x.PlayerId);
-
-            progression.Property(x => x.CurrentLevel)
-                .IsRequired();
-
-            progression.Property(x => x.CurrentXp)
-                .IsRequired();
-
-            progression.Property(x => x.TotalXp)
-                .IsRequired();
-
-            progression.Property(x => x.XpToNextLevel)
-                .IsRequired();
-
-            progression.Property(x => x.SkillPoints)
-                .IsRequired();
-
-            progression.HasIndex(x => x.CurrentLevel);
-
-            progression.HasIndex(x => x.TotalXp);
-        });
-
-        builder.OwnsOne(x => x.Statistics, statistics =>
+        builder.OwnsOne(p => p.Statistics, statistics =>
         {
             statistics.ToTable("player_statistics");
 
             statistics.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
+                .HasForeignKey(p => p.PlayerId);
 
-            statistics.HasKey(x => x.PlayerId);
+            statistics.HasKey(p => p.PlayerId);
 
-            statistics.Property(x => x.TotalPostsPublished)
+            statistics.Property(p => p.TotalPostsPublished)
                 .IsRequired();
 
-            statistics.Property(x => x.TotalCommits)
+            statistics.Property(p => p.TotalCommits)
                 .IsRequired();
 
-            statistics.Property(x => x.TotalApplications)
+            statistics.Property(p => p.TotalApplications)
                 .IsRequired();
 
-            statistics.Property(x => x.TotalNetworkingInteractions)
+            statistics.Property(p => p.TotalNetworkingInteractions)
                 .IsRequired();
 
-            statistics.Property(x => x.TotalQuestsCompleted)
+            statistics.Property(p => p.TotalQuestsCompleted)
                 .IsRequired();
 
-            statistics.Property(x => x.TotalAchievementsUnlocked)
+            statistics.Property(p => p.TotalAchievementsUnlocked)
                 .IsRequired();
         });
 
-        builder.OwnsOne(x => x.Streak, streak =>
+        builder.OwnsOne(p => p.Streak, streak =>
         {
             streak.ToTable("player_streaks");
 
             streak.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
+                .HasForeignKey(p => p.PlayerId);
 
-            streak.HasKey(x => x.PlayerId);
+            streak.HasKey(p => p.PlayerId);
 
-            streak.Property(x => x.CurrentDays)
+            streak.Property(p => p.CurrentDays)
                 .IsRequired();
 
-            streak.Property(x => x.LongestDays)
+            streak.Property(p => p.LongestDays)
                 .IsRequired();
 
-            streak.Property(x => x.CurrentMultiplier)
+            streak.Property(p => p.CurrentMultiplier)
                 .HasPrecision(5, 2);
 
-            streak.Property(x => x.LastActivityDateUtc)
+            streak.Property(p => p.LastActivityDateUtc)
                 .IsRequired();
         });
 
-        builder.OwnsMany(x => x.Classes, classes =>
+        builder.OwnsMany(p => p.Classes, classes =>
         {
             classes.ToTable("player_classes");
 
             classes.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
+                .HasForeignKey(p => p.PlayerId);
 
             classes.HasKey(x => new
             {
@@ -143,19 +119,19 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
                 x.ClassType,
             });
 
-            classes.Property(x => x.ClassType)
+            classes.Property(p => p.ClassType)
                 .HasConversion<int>()
                 .IsRequired();
 
-            classes.HasIndex(x => x.ClassType);
+            classes.HasIndex(p => p.ClassType);
         });
 
-        builder.OwnsMany(x => x.Specializations, specializations =>
+        builder.OwnsMany(p => p.Specializations, specializations =>
         {
             specializations.ToTable("player_specializations");
 
             specializations.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
+                .HasForeignKey(p => p.PlayerId);
 
             specializations.HasKey(x => new
             {
@@ -163,19 +139,19 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
                 x.SpecializationType,
             });
 
-            specializations.Property(x => x.SpecializationType)
+            specializations.Property(p => p.SpecializationType)
                 .HasConversion<int>()
                 .IsRequired();
 
-            specializations.HasIndex(x => x.SpecializationType);
+            specializations.HasIndex(p => p.SpecializationType);
         });
 
-        builder.OwnsMany(x => x.Titles, titles =>
+        builder.OwnsMany(p => p.Titles, titles =>
         {
             titles.ToTable("player_titles");
 
             titles.WithOwner()
-                .HasForeignKey(x => x.PlayerId);
+                .HasForeignKey(p => p.PlayerId);
 
             titles.HasKey(x => new
             {
@@ -183,19 +159,19 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
                 x.TitleType,
             });
 
-            titles.Property(x => x.TitleType)
+            titles.Property(p => p.TitleType)
                 .HasConversion<int>()
                 .IsRequired();
 
-            titles.Property(x => x.IsCurrent)
+            titles.Property(p => p.IsCurrent)
                 .IsRequired();
 
-            titles.Property(x => x.UnlockedAtUtc)
+            titles.Property(p => p.UnlockedAtUtc)
                 .IsRequired();
 
-            titles.HasIndex(x => x.TitleType);
+            titles.HasIndex(p => p.TitleType);
 
-            titles.HasIndex(x => x.IsCurrent);
+            titles.HasIndex(p => p.IsCurrent);
         });
     }
 }

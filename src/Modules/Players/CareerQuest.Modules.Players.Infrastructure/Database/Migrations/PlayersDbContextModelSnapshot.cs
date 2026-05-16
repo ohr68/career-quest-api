@@ -188,6 +188,44 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                     b.ToTable("players", "players");
                 });
 
+            modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.PlayerProgression", b =>
+                {
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<int>("CurrentLevel")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_level");
+
+                    b.Property<int>("CurrentXp")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_xp");
+
+                    b.Property<int>("SkillPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("skill_points");
+
+                    b.Property<int>("TotalXp")
+                        .HasColumnType("integer")
+                        .HasColumnName("total_xp");
+
+                    b.Property<int>("XpToNextLevel")
+                        .HasColumnType("integer")
+                        .HasColumnName("xp_to_next_level");
+
+                    b.HasKey("PlayerId")
+                        .HasName("pk_player_progressions");
+
+                    b.HasIndex("CurrentLevel")
+                        .HasDatabaseName("ix_player_progressions_current_level");
+
+                    b.HasIndex("TotalXp")
+                        .HasDatabaseName("ix_player_progressions_total_xp");
+
+                    b.ToTable("player_progressions", "players");
+                });
+
             modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.Player", b =>
                 {
                     b.OwnsMany("CareerQuest.Modules.Players.Domain.Players.PlayerClass", "Classes", b1 =>
@@ -211,48 +249,6 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PlayerId")
                                 .HasConstraintName("fk_player_classes_players_player_id");
-                        });
-
-                    b.OwnsOne("CareerQuest.Modules.Players.Domain.Players.PlayerProgression", "Progression", b1 =>
-                        {
-                            b1.Property<Guid>("PlayerId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("id");
-
-                            b1.Property<int>("CurrentLevel")
-                                .HasColumnType("integer")
-                                .HasColumnName("current_level");
-
-                            b1.Property<int>("CurrentXp")
-                                .HasColumnType("integer")
-                                .HasColumnName("current_xp");
-
-                            b1.Property<int>("SkillPoints")
-                                .HasColumnType("integer")
-                                .HasColumnName("skill_points");
-
-                            b1.Property<int>("TotalXp")
-                                .HasColumnType("integer")
-                                .HasColumnName("total_xp");
-
-                            b1.Property<int>("XpToNextLevel")
-                                .HasColumnType("integer")
-                                .HasColumnName("xp_to_next_level");
-
-                            b1.HasKey("PlayerId")
-                                .HasName("pk_player_progressions");
-
-                            b1.HasIndex("CurrentLevel")
-                                .HasDatabaseName("ix_player_progressions_current_level");
-
-                            b1.HasIndex("TotalXp")
-                                .HasDatabaseName("ix_player_progressions_total_xp");
-
-                            b1.ToTable("player_progressions", "players");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PlayerId")
-                                .HasConstraintName("fk_player_progressions_players_id");
                         });
 
                     b.OwnsMany("CareerQuest.Modules.Players.Domain.Players.PlayerSpecialization", "Specializations", b1 =>
@@ -387,17 +383,74 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
 
                     b.Navigation("Classes");
 
-                    b.Navigation("Progression");
-
                     b.Navigation("Specializations");
 
-                    b.Navigation("Statistics")
-                        .IsRequired();
+                    b.Navigation("Statistics");
 
-                    b.Navigation("Streak")
-                        .IsRequired();
+                    b.Navigation("Streak");
 
                     b.Navigation("Titles");
+                });
+
+            modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.PlayerProgression", b =>
+                {
+                    b.HasOne("CareerQuest.Modules.Players.Domain.Players.Player", null)
+                        .WithOne("Progression")
+                        .HasForeignKey("CareerQuest.Modules.Players.Domain.Players.PlayerProgression", "PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_player_progressions_players_player_id");
+
+                    b.OwnsMany("CareerQuest.Modules.Players.Domain.Players.XpTransaction", "Transactions", b1 =>
+                        {
+                            b1.Property<Guid>("PlayerId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("player_id");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Action")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("action");
+
+                            b1.Property<int>("Amount")
+                                .HasColumnType("integer")
+                                .HasColumnName("amount");
+
+                            b1.Property<DateTime>("EarnedAtUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("earned_at_utc");
+
+                            b1.Property<float>("Multiplier")
+                                .HasColumnType("real")
+                                .HasColumnName("multiplier");
+
+                            b1.Property<string>("Notes")
+                                .HasColumnType("text")
+                                .HasColumnName("notes");
+
+                            b1.HasKey("PlayerId", "Id")
+                                .HasName("pk_player_xp_transactions");
+
+                            b1.ToTable("player_xp_transactions", "players");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlayerId")
+                                .HasConstraintName("fk_player_xp_transactions_player_progressions_player_id");
+                        });
+
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.Player", b =>
+                {
+                    b.Navigation("Progression");
                 });
 #pragma warning restore 612, 618
         }

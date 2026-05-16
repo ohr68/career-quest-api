@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -118,7 +119,7 @@ public partial class Create_Database : Migration
             schema: "players",
             columns: table => new
             {
-                id = table.Column<Guid>(type: "uuid", nullable: false),
+                player_id = table.Column<Guid>(type: "uuid", nullable: false),
                 current_level = table.Column<int>(type: "integer", nullable: false),
                 current_xp = table.Column<int>(type: "integer", nullable: false),
                 total_xp = table.Column<int>(type: "integer", nullable: false),
@@ -127,10 +128,10 @@ public partial class Create_Database : Migration
             },
             constraints: table =>
             {
-                table.PrimaryKey("pk_player_progressions", x => x.id);
+                table.PrimaryKey("pk_player_progressions", x => x.player_id);
                 table.ForeignKey(
-                    name: "fk_player_progressions_players_id",
-                    column: x => x.id,
+                    name: "fk_player_progressions_players_player_id",
+                    column: x => x.player_id,
                     principalSchema: "players",
                     principalTable: "players",
                     principalColumn: "id",
@@ -227,6 +228,32 @@ public partial class Create_Database : Migration
                     onDelete: ReferentialAction.Cascade);
             });
 
+        migrationBuilder.CreateTable(
+            name: "player_xp_transactions",
+            schema: "players",
+            columns: table => new
+            {
+                player_id = table.Column<Guid>(type: "uuid", nullable: false),
+                id = table.Column<int>(type: "integer", nullable: false)
+                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                action = table.Column<string>(type: "text", nullable: false),
+                amount = table.Column<int>(type: "integer", nullable: false),
+                multiplier = table.Column<float>(type: "real", nullable: false),
+                earned_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                notes = table.Column<string>(type: "text", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pk_player_xp_transactions", x => new { x.player_id, x.id });
+                table.ForeignKey(
+                    name: "fk_player_xp_transactions_player_progressions_player_id",
+                    column: x => x.player_id,
+                    principalSchema: "players",
+                    principalTable: "player_progressions",
+                    principalColumn: "player_id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
         migrationBuilder.CreateIndex(
             name: "ix_player_classes_class_type",
             schema: "players",
@@ -307,10 +334,6 @@ public partial class Create_Database : Migration
             schema: "players");
 
         migrationBuilder.DropTable(
-            name: "player_progressions",
-            schema: "players");
-
-        migrationBuilder.DropTable(
             name: "player_specializations",
             schema: "players");
 
@@ -324,6 +347,14 @@ public partial class Create_Database : Migration
 
         migrationBuilder.DropTable(
             name: "player_titles",
+            schema: "players");
+
+        migrationBuilder.DropTable(
+            name: "player_xp_transactions",
+            schema: "players");
+
+        migrationBuilder.DropTable(
+            name: "player_progressions",
             schema: "players");
 
         migrationBuilder.DropTable(

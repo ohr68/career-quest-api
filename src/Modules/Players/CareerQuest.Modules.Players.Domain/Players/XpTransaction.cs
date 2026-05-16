@@ -2,13 +2,37 @@
 
 public sealed class XpTransaction
 {
-    public Guid Id { get; private set; }
+    private XpTransaction()
+    {
+    }
 
-    public Guid PlayerId { get; private set; }
+    public Guid PlayerId { get; init; }
 
-    public int Amount { get; private set; }
+    public string Action { get; init; }
 
-    public string Source { get; private set; }
+    public int Amount { get; init; }
 
-    public DateTime EarnedAtUtc { get; private set; }
+    public float Multiplier { get; init; }
+
+    public DateTime EarnedAtUtc { get; init; }
+
+    public string? Notes { get; init; }
+
+    internal static XpTransaction Create(
+        Guid playerId,
+        string action,
+        int amount,
+        float multiplier,
+        string? notes)
+    {
+        return new XpTransaction
+        {
+            PlayerId = playerId,
+            Action = action,
+            Amount = amount,
+            Multiplier = multiplier,
+            EarnedAtUtc = DateTime.UtcNow,
+            Notes = notes,
+        };
+    }
 }
