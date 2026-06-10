@@ -22,6 +22,8 @@ public sealed class Player : Entity
 
     public string? Headline { get; private set; }
 
+    public string TimeZoneId { get; private set; } = "UTC";
+
     public CareerStage CareerStage { get; private set; }
 
     public DateTime JoinedAtUtc { get; private set; }
@@ -42,13 +44,13 @@ public sealed class Player : Entity
         _specializations.Count > 0;
 
     public IReadOnlyCollection<PlayerClass> Classes =>
-        _classes.ToList();
+        _classes.AsReadOnly();
 
     public IReadOnlyCollection<PlayerSpecialization> Specializations =>
-        _specializations.ToList();
+        _specializations.AsReadOnly();
 
     public IReadOnlyCollection<PlayerTitle> Titles =>
-        _titles.ToList();
+        _titles.AsReadOnly();
 
     public PlayerTitle? CurrentTitle =>
         _titles.SingleOrDefault(x => x.IsCurrent);
@@ -56,10 +58,9 @@ public sealed class Player : Entity
     public static Player Create(
         Guid id,
         string email,
-        string displayName)
+        string displayName,
+        DateTime utcNow)
     {
-        DateTime utcNow = DateTime.UtcNow;
-
         var player = new Player
         {
             Id = id,
@@ -78,7 +79,8 @@ public sealed class Player : Entity
         string displayName,
         string? headline,
         Uri? avatarUrl,
-        CareerStage careerStage)
+        CareerStage careerStage,
+        DateTime utcNow)
     {
         if (DisplayName == displayName &&
             Headline == headline &&
@@ -93,7 +95,7 @@ public sealed class Player : Entity
         AvatarUrl = avatarUrl;
         CareerStage = careerStage;
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerProfileUpdatedDomainEvent(
             Id,
@@ -108,7 +110,10 @@ public sealed class Player : Entity
         Uri? avatarUrl,
         CareerStage careerStage,
         IReadOnlyCollection<PlayerClassType> playerClassTypes,
-        IReadOnlyCollection<PlayerSpecializationType> playerSpecializationTypes)
+        IReadOnlyCollection<PlayerSpecializationType> playerSpecializationTypes,
+        string timeZoneId,
+        DateTime utcNow,
+        DateOnly activityDate)
     {
         if (Progression is not null && Statistics is not null && Streak is not null)
         {
@@ -118,44 +123,44 @@ public sealed class Player : Entity
         Headline = headline;
         AvatarUrl = avatarUrl;
         CareerStage = careerStage;
+        TimeZoneId = timeZoneId;
 
         Progression = PlayerProgression.Create(Id);
 
         Statistics = PlayerStatistics.Create(Id);
 
         Streak = PlayerStreak.Create(Id);
+        Streak.RegisterActivity(activityDate);
 
         PlayerTitle? existing = _titles.FirstOrDefault(x => x.TitleType == TitleType.AnonymousDeveloper);
 
-        if (existing is not null)
+        if (existing is null)
         {
-            return;
+            _titles.Add(
+                PlayerTitle.Create(
+                    Id,
+                    TitleType.AnonymousDeveloper,
+                    utcNow,
+                    true));
         }
-
-        _titles.Add(
-            PlayerTitle.Create(
-                Id,
-                TitleType.AnonymousDeveloper,
-                true));
-
 
         foreach (PlayerClassType playerClassType in playerClassTypes)
         {
-            AddClass(playerClassType);
+            AddClass(playerClassType, utcNow);
         }
 
         foreach (PlayerSpecializationType playerSpecializationType in playerSpecializationTypes)
         {
-            AddSpecialization(playerSpecializationType);
+            AddSpecialization(playerSpecializationType, utcNow);
         }
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerProfileCompletedDomainEvent(Id));
     }
 
 
-    public void AddClass(PlayerClassType classType)
+    public void AddClass(PlayerClassType classType, DateTime utcNow)
     {
         if (_classes.Any(x => x.ClassType == classType))
         {
@@ -168,7 +173,7 @@ public sealed class Player : Entity
 
         _classes.Add(playerClass);
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerClassAddedDomainEvent(
             Id,
@@ -176,7 +181,8 @@ public sealed class Player : Entity
     }
 
     public void AddSpecialization(
-        PlayerSpecializationType specializationType)
+        PlayerSpecializationType specializationType,
+        DateTime utcNow)
     {
         if (_specializations.Any(x => x.SpecializationType == specializationType))
         {
@@ -189,14 +195,14 @@ public sealed class Player : Entity
 
         _specializations.Add(specialization);
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerSpecializationAddedDomainEvent(
             Id,
             specializationType));
     }
 
-    public void UnlockTitle(TitleType titleType)
+    public void UnlockTitle(TitleType titleType, DateTime utcNow)
     {
         PlayerTitle? existing = _titles.FirstOrDefault(x => x.TitleType == titleType);
 
@@ -210,18 +216,19 @@ public sealed class Player : Entity
         var title = PlayerTitle.Create(
             Id,
             titleType,
+            utcNow,
             isFirstTitle);
 
         _titles.Add(title);
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerTitleUnlockedDomainEvent(
             Id,
             titleType));
     }
 
-    public void EquipTitle(TitleType titleType)
+    public void EquipTitle(TitleType titleType, DateTime utcNow)
     {
         PlayerTitle? title = _titles
             .SingleOrDefault(x => x.TitleType == titleType);
@@ -238,14 +245,14 @@ public sealed class Player : Entity
 
         title.SetAsCurrent();
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new PlayerTitleEquippedDomainEvent(
             Id,
             titleType));
     }
 
-    public void AdvanceCareerStage(CareerStage stage)
+    public void AdvanceCareerStage(CareerStage stage, DateTime utcNow)
     {
         if (CareerStage == stage)
         {
@@ -254,20 +261,44 @@ public sealed class Player : Entity
 
         CareerStage = stage;
 
-        Touch();
+        Touch(utcNow);
 
         Raise(new CareerStageAdvancedDomainEvent(
             Id,
             CareerStage));
     }
 
-    public void UpdateLastActivity()
+    public void RegisterActivity(DateOnly activityDate, DateTime utcNow)
     {
-        LastActiveAtUtc = DateTime.UtcNow;
+        if (Streak is null)
+        {
+            return;
+        }
+
+        int previousDays = Streak.CurrentDays;
+
+        Streak.RegisterActivity(activityDate);
+
+        Touch(utcNow);
+
+        if (Streak.CurrentDays != previousDays)
+        {
+            Raise(new PlayerStreakUpdatedDomainEvent(
+                Id,
+                Streak.CurrentDays,
+                Streak.LongestDays,
+                Streak.CurrentMultiplier)
+            );
+        }
     }
 
-    private void Touch()
+    public void UpdateLastActivity(DateTime utcNow)
     {
-        LastActiveAtUtc = DateTime.UtcNow;
+        LastActiveAtUtc = utcNow;
+    }
+
+    private void Touch(DateTime utcNow)
+    {
+        LastActiveAtUtc = utcNow;
     }
 }

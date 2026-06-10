@@ -1,4 +1,5 @@
-﻿using CareerQuest.Common.Application.Messaging;
+﻿using CareerQuest.Common.Application.Clock;
+using CareerQuest.Common.Application.Messaging;
 using CareerQuest.Common.Domain.Abstractions;
 using CareerQuest.Modules.Players.Application.Abstractions.Data;
 using CareerQuest.Modules.Players.Domain.Players;
@@ -7,6 +8,7 @@ namespace CareerQuest.Modules.Players.Application.Players.AddPlayerSpecializatio
 
 internal sealed class AddPlayerSpecializationCommandHandler(
     IPlayerRepository playerRepository,
+    IDateTimeProvider dateTimeProvider,
     IUnitOfWork unitOfWork)
     : ICommandHandler<AddPlayerSpecializationCommand>
 {
@@ -23,7 +25,7 @@ internal sealed class AddPlayerSpecializationCommandHandler(
             return Result.Failure(PlayerErrors.NotFound(request.PlayerId));
         }
 
-        player.AddSpecialization(request.SpecializationType);
+        player.AddSpecialization(request.SpecializationType, dateTimeProvider.UtcNow);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

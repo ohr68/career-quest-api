@@ -23,7 +23,8 @@ public sealed class XpTransaction
         string action,
         int amount,
         float multiplier,
-        string? notes)
+        string? notes,
+        DateTime utcNow)
     {
         return new XpTransaction
         {
@@ -31,7 +32,7 @@ public sealed class XpTransaction
             Action = action,
             Amount = amount,
             Multiplier = multiplier,
-            EarnedAtUtc = DateTime.UtcNow,
+            EarnedAtUtc = utcNow,
             Notes = notes,
         };
     }

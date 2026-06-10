@@ -23,5 +23,9 @@ internal sealed class CompleteProfileCommandValidator : AbstractValidator<Comple
 
         RuleForEach(c => c.Specializations)
             .IsInEnum();
+        
+        RuleFor(c => c.TimeZoneId)
+            .NotEmpty()
+            .Must(tz => TimeZoneInfo.GetSystemTimeZones().Any(t => t.Id == tz));
     }
 }

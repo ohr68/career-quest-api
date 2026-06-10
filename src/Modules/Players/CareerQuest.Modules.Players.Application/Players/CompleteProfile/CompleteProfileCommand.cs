@@ -9,4 +9,5 @@ public sealed record CompleteProfileCommand(
     Uri? AvatarUrl,
     CareerStage CareerStage,
     IReadOnlyCollection<PlayerClassType> Classes,
-    IReadOnlyCollection<PlayerSpecializationType> Specializations) : ICommand;
+    IReadOnlyCollection<PlayerSpecializationType> Specializations,
+    string TimeZoneId) : ICommand;

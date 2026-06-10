@@ -17,6 +17,7 @@ public sealed class PlayerTitle
     public static PlayerTitle Create(
         Guid playerId,
         TitleType titleType,
+        DateTime utcNow,
         bool isCurrent = false)
     {
         return new PlayerTitle
@@ -24,7 +25,7 @@ public sealed class PlayerTitle
             PlayerId = playerId,
             TitleType = titleType,
             IsCurrent = isCurrent,
-            UnlockedAtUtc = DateTime.UtcNow,
+            UnlockedAtUtc = utcNow,
         };
     }
 

@@ -102,7 +102,7 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
             streak.Property(p => p.CurrentMultiplier)
                 .HasPrecision(5, 2);
 
-            streak.Property(p => p.LastActivityDateUtc)
+            streak.Property(p => p.LastActivityDate)
                 .IsRequired();
         });
 

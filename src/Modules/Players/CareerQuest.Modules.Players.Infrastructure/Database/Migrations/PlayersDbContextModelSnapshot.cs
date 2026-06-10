@@ -172,6 +172,11 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_active_at_utc");
 
+                    b.Property<string>("TimeZoneId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone_id");
+
                     b.HasKey("Id")
                         .HasName("pk_players");
 
@@ -329,9 +334,9 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                                 .HasColumnType("numeric(5,2)")
                                 .HasColumnName("current_multiplier");
 
-                            b1.Property<DateTime>("LastActivityDateUtc")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("last_activity_date_utc");
+                            b1.Property<DateOnly>("LastActivityDate")
+                                .HasColumnType("date")
+                                .HasColumnName("last_activity_date");
 
                             b1.Property<int>("LongestDays")
                                 .HasColumnType("integer")

@@ -85,6 +85,7 @@ public partial class Create_Database : Migration
                 email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                 avatar_url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                 headline = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                time_zone_id = table.Column<string>(type: "text", nullable: false),
                 career_stage = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 joined_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 last_active_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -192,7 +193,7 @@ public partial class Create_Database : Migration
                 current_days = table.Column<int>(type: "integer", nullable: false),
                 longest_days = table.Column<int>(type: "integer", nullable: false),
                 current_multiplier = table.Column<decimal>(type: "numeric(5,2)", precision: 5, scale: 2, nullable: false),
-                last_activity_date_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                last_activity_date = table.Column<DateOnly>(type: "date", nullable: false)
             },
             constraints: table =>
             {

@@ -1,4 +1,5 @@
-﻿using CareerQuest.Common.Application.Messaging;
+﻿using CareerQuest.Common.Application.Clock;
+using CareerQuest.Common.Application.Messaging;
 using CareerQuest.Common.Domain.Abstractions;
 using CareerQuest.Modules.Players.Application.Abstractions.Data;
 using CareerQuest.Modules.Players.Domain.Players;
@@ -7,6 +8,7 @@ namespace CareerQuest.Modules.Players.Application.Players.AdvanceCareerStage;
 
 internal sealed class AdvanceCareerStageCommandHandler(
     IPlayerRepository playerRepository,
+    IDateTimeProvider dateTimeProvider,
     IUnitOfWork unitOfWork)
     : ICommandHandler<AdvanceCareerStageCommand>
 {
@@ -23,7 +25,7 @@ internal sealed class AdvanceCareerStageCommandHandler(
             return Result.Failure(PlayerErrors.NotFound(request.PlayerId));
         }
 
-        player.AdvanceCareerStage(request.CareerStage);
+        player.AdvanceCareerStage(request.CareerStage, dateTimeProvider.UtcNow);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -22,7 +22,7 @@ public sealed class PlayerProgression : Entity
 
     public int SkillPoints { get; private set; }
 
-    public IReadOnlyCollection<XpTransaction> Transactions => _transactions.ToList();
+    public IReadOnlyCollection<XpTransaction> Transactions => _transactions.AsReadOnly();
 
     public static PlayerProgression Create(Guid playerId)
     {
@@ -41,6 +41,7 @@ public sealed class PlayerProgression : Entity
         int amount,
         string action,
         DifficultyModifier modifier,
+        DateTime utcNow,
         string? notes = null)
     {
         int multiplier = CalculateDifficultyMultiplier(modifier);
@@ -57,7 +58,8 @@ public sealed class PlayerProgression : Entity
             action,
             finalAmount,
             multiplier,
-            notes);
+            notes,
+            utcNow);
 
         _transactions.Add(transaction);
 
@@ -79,7 +81,7 @@ public sealed class PlayerProgression : Entity
             CurrentLevel - startingLevel,
             TotalXp,
             levelUps,
-            _transactions.ToList()
+            _transactions.AsReadOnly()
         );
     }
 

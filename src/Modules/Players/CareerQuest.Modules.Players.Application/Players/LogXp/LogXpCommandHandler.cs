@@ -20,10 +20,17 @@ internal sealed class LogXpCommandHandler(
             return Result.Failure<LogXpResponse>(PlayerErrors.NotFound(request.PlayerId));
         }
 
+        DateTime utcNow = dateTimeProvider.UtcNow;
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(player.TimeZoneId);
+        var activityDate = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(utcNow, timeZone));
+
+        player.RegisterActivity(activityDate, utcNow);
+
         XpResult xpResult = player.Progression!.AddXp(
             request.Amount,
             request.Action,
             request.Modifier,
+            utcNow,
             request.Notes
         );
 
@@ -41,7 +48,7 @@ internal sealed class LogXpCommandHandler(
             xpResult.LevelUps,
             xpResult.TotalXp,
             request.Action,
-            dateTimeProvider.UtcNow
+            utcNow
         );
     }
 }

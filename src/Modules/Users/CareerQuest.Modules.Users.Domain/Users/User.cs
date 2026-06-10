@@ -20,7 +20,7 @@ public sealed class User : Entity
 
     public string IdentityId { get; private set; }
 
-    public IReadOnlyCollection<Role> Roles => _roles.ToList();
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
     public static User Create(
         string email,

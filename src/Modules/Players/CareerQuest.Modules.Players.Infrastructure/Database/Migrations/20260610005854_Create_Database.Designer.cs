@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(PlayersDbContext))]
-    [Migration("20260516155040_Create_Database")]
+    [Migration("20260610005854_Create_Database")]
     partial class Create_Database
     {
         /// <inheritdoc />
@@ -175,6 +175,11 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_active_at_utc");
 
+                    b.Property<string>("TimeZoneId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("time_zone_id");
+
                     b.HasKey("Id")
                         .HasName("pk_players");
 
@@ -332,9 +337,9 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                                 .HasColumnType("numeric(5,2)")
                                 .HasColumnName("current_multiplier");
 
-                            b1.Property<DateTime>("LastActivityDateUtc")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("last_activity_date_utc");
+                            b1.Property<DateOnly>("LastActivityDate")
+                                .HasColumnType("date")
+                                .HasColumnName("last_activity_date");
 
                             b1.Property<int>("LongestDays")
                                 .HasColumnType("integer")

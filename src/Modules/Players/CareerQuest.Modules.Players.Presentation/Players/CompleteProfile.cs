@@ -29,7 +29,8 @@ internal sealed class CompleteProfile : IEndpoint
                             request.AvatarUrl,
                             request.CareerStage,
                             request.Classes,
-                            request.Specializations));
+                            request.Specializations,
+                            request.TimeZoneId));
 
                     return result.Match(
                         Results.NoContent,
@@ -46,5 +47,6 @@ internal sealed class CompleteProfile : IEndpoint
         public CareerStage CareerStage { get; init; }
         public IReadOnlyCollection<PlayerClassType> Classes { get; init; }
         public IReadOnlyCollection<PlayerSpecializationType> Specializations { get; init; }
+        public string TimeZoneId { get; init; }
     }
 }
