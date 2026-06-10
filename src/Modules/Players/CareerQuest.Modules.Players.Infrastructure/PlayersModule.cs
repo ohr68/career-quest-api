@@ -1,14 +1,17 @@
-﻿using CareerQuest.Common.Application.EventBus;
+﻿using Anthropic;
+using CareerQuest.Common.Application.EventBus;
 using CareerQuest.Common.Application.Messaging;
 using CareerQuest.Common.Infrastructure.Configuration;
 using CareerQuest.Common.Infrastructure.Outbox;
 using CareerQuest.Common.Presentation.Endpoints;
 using CareerQuest.Modules.Players.Application.Abstractions.Authentication;
 using CareerQuest.Modules.Players.Application.Abstractions.Data;
+using CareerQuest.Modules.Players.Application.Abstractions.Intelligence;
 using CareerQuest.Modules.Players.Domain.Players;
 using CareerQuest.Modules.Players.Infrastructure.Authentication;
 using CareerQuest.Modules.Players.Infrastructure.Database;
 using CareerQuest.Modules.Players.Infrastructure.Inbox;
+using CareerQuest.Modules.Players.Infrastructure.Intelligence;
 using CareerQuest.Modules.Players.Infrastructure.Outbox;
 using CareerQuest.Modules.Players.Infrastructure.Players;
 using CareerQuest.Modules.Players.Presentation;
@@ -19,6 +22,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace CareerQuest.Modules.Players.Infrastructure;
 
@@ -65,6 +69,15 @@ public static class PlayersModule
             services.Configure<InboxOptions>(configuration.GetRequiredSection("Players:Inbox"));
 
             services.ConfigureOptions<ConfigureProcessInboxJob>();
+
+            services.AddSingleton(sp => new AnthropicClient
+            {
+                ApiKey = sp.GetRequiredService<IOptions<AnthropicOptions>>().Value.ApiKey,
+            });
+
+            services.AddScoped<IActivityClassifier, ClaudeActivityClassifier>();
+            services.AddScoped<IQuestGenerator, ClaudeQuestGenerator>();
+            services.AddScoped<ICareerCoach, ClaudeCareerCoach>();
         }
 
         private void AddDomainEventHandlers()
