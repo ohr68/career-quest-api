@@ -231,6 +231,59 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                     b.ToTable("player_progressions", "players");
                 });
 
+            modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.PlayerQuest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at_utc");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("difficulty");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at_utc");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("XpReward")
+                        .HasColumnType("integer")
+                        .HasColumnName("xp_reward");
+
+                    b.HasKey("Id")
+                        .HasName("pk_player_quests");
+
+                    b.HasIndex("ExpiresAtUtc")
+                        .HasDatabaseName("ix_player_quests_expires_at_utc");
+
+                    b.HasIndex("PlayerId")
+                        .HasDatabaseName("ix_player_quests_player_id");
+
+                    b.ToTable("player_quests", "players");
+                });
+
             modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.Player", b =>
                 {
                     b.OwnsMany("CareerQuest.Modules.Players.Domain.Players.PlayerClass", "Classes", b1 =>
@@ -453,9 +506,21 @@ namespace CareerQuest.Modules.Players.Infrastructure.Database.Migrations
                     b.Navigation("Transactions");
                 });
 
+            modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.PlayerQuest", b =>
+                {
+                    b.HasOne("CareerQuest.Modules.Players.Domain.Players.Player", null)
+                        .WithMany("Quests")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_player_quests_players_player_id");
+                });
+
             modelBuilder.Entity("CareerQuest.Modules.Players.Domain.Players.Player", b =>
                 {
                     b.Navigation("Progression");
+
+                    b.Navigation("Quests");
                 });
 #pragma warning restore 612, 618
         }

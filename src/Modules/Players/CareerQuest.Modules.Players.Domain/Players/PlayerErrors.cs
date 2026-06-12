@@ -21,4 +21,22 @@ public static class PlayerErrors
         return Error.NotFound("Players.NotFound",
             $"The player with the identifier {playerId} was not found.");
     }
+
+    public static Error ProfileNotCompleted(Guid playerId)
+    {
+        return Error.Problem("Players.ProfileNotCompleted",
+            $"The player with the identifier {playerId} has not completed their profile.");
+    }
+
+    public static Error QuestNotFound(Guid questId)
+    {
+        return Error.NotFound("Players.QuestNotFound",
+            $"The quest with the identifier {questId} was not found.");
+    }
+
+    public static Error QuestExpired(Guid questId)
+    {
+        return Error.Problem("Players.QuestExpired",
+            $"The quest with the identifier {questId} has expired.");
+    }
 }

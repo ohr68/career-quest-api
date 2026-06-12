@@ -30,7 +30,7 @@ internal sealed class KeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOpt
 
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        return await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken);
+        return (await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken))!;
     }
 
     internal async Task<TokenResponse> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest,
@@ -53,6 +53,6 @@ internal sealed class KeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOpt
 
         httpResponseMessage.EnsureSuccessStatusCode();
 
-        return await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken);
+        return (await httpResponseMessage.Content.ReadFromJsonAsync<TokenResponse>(cancellationToken))!;
     }
 }

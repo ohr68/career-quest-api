@@ -8,5 +8,6 @@ public sealed record PlayerCoachingContext(
     CareerStage CareerStage,
     int CurrentLevel,
     int CurrentStreakDays,
-    IReadOnlyCollection<PlayerClassType> Specializations,
+    IReadOnlyCollection<PlayerClassType> Classes,
+    IReadOnlyCollection<PlayerSpecializationType> Specializations,
     IReadOnlyCollection<string> RecentActions);

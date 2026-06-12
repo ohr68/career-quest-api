@@ -1,27 +1,31 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Anthropic;
 using Anthropic.Models.Messages;
 using CareerQuest.Common.Domain.Abstractions;
 using CareerQuest.Modules.Players.Application.Abstractions.Intelligence;
 using CareerQuest.Modules.Players.Domain.Intelligence;
 using CareerQuest.Modules.Players.Domain.Players;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CareerQuest.Modules.Players.Infrastructure.Intelligence;
 
 internal sealed class ClaudeQuestGenerator(
     AnthropicClient client,
-    IOptions<AnthropicOptions> options) : IQuestGenerator
+    IOptions<AnthropicOptions> options,
+    ILogger<ClaudeQuestGenerator> logger) : IQuestGenerator
 {
     private const string SystemPrompt =
         """
-        You classify a developer's career activity for a gamified progression tracker.
-        Given a free-text description of what the player did, decide:
-        - action: a short snake_case label (e.g. "open_source_contribution", "blog_post", "networking")
-        - difficulty: Easy (routine, < 1h), Medium (substantial, multi-hour), High (major, multi-day or high-impact)
-        - suggestedXp: 10-50 base XP proportional to effort, BEFORE difficulty multipliers
-        - looksImplausible: true if the claim is vague, unverifiable bragging, or inflated
-        Be conservative: when unsure, pick the lower difficulty.                               
+        You generate weekly career quests for a gamified developer progression tracker.
+        Given a player's career stage, level, classes, specializations and recent activity,
+        produce quests that are:
+        - concrete and verifiable (a clear "done" condition, not "improve your skills")
+        - completable within one week alongside a full-time job
+        - matched to the player's classes/specializations and appropriate for their career stage
+        - different from the player's recent actions (push them to vary, not repeat)
+        Difficulty: Easy (a focused evening), Medium (several evenings), High (most of the week).
+        XP rewards must be between 20 and 60, proportional to difficulty.
         """;
 
     private static readonly Dictionary<string, JsonElement> Schema = new()
@@ -29,14 +33,25 @@ internal sealed class ClaudeQuestGenerator(
         ["type"] = JsonSerializer.SerializeToElement("object"),
         ["properties"] = JsonSerializer.SerializeToElement(new
         {
-            action = new { type = "string" },
-            difficulty = new { type = "string", @enum = new[] { "Easy", "Medium", "High" } },
-            suggestedXp = new { type = "integer" },
-            looksImplausible = new { type = "boolean" },
-            reasoning = new { type = "string" },
+            quests = new
+            {
+                type = "array",
+                items = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        title = new { type = "string" },
+                        description = new { type = "string" },
+                        xpReward = new { type = "integer" },
+                        difficulty = new { type = "string", @enum = new[] { "Easy", "Medium", "High" } },
+                    },
+                    required = new[] { "title", "description", "xpReward", "difficulty" },
+                    additionalProperties = false,
+                },
+            },
         }),
-        ["required"] = JsonSerializer.SerializeToElement(
-            new[] { "action", "difficulty", "suggestedXp", "looksImplausible", "reasoning" }),
+        ["required"] = JsonSerializer.SerializeToElement(new[] { "quests" }),
         ["additionalProperties"] = JsonSerializer.SerializeToElement(false),
     };
 
@@ -50,7 +65,7 @@ internal sealed class ClaudeQuestGenerator(
             response = await client.Messages.Create(new MessageCreateParams
             {
                 Model = options.Value.GenerationModel,
-                MaxTokens = 1024,
+                MaxTokens = 2048,
                 System = new List<TextBlockParam>
                 {
                     new() { Text = SystemPrompt, CacheControl = new CacheControlEphemeral() },
@@ -67,18 +82,15 @@ internal sealed class ClaudeQuestGenerator(
                         Content = $"""
                                    Generate exactly 3 weekly quests for this player:
                                    {JsonSerializer.Serialize(context, JsonSerializerOptions.Web)}
-
-                                   Rules: quests must be concrete and completable in one week, matched to the
-                                   player's classes/specializations, and must not repeat their recent actions.
-                                   XP rewards between 20 and 60.
                                    """,
                     },
                 ],
             }, cancellationToken);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            Console.WriteLine(e);
+            logger.LogError(exception, "Quest generation request failed");
+
             return Result.Failure<IReadOnlyCollection<QuestDraft>>(IntelligenceErrors.Unavailable);
         }
 
@@ -92,23 +104,37 @@ internal sealed class ClaudeQuestGenerator(
             return Result.Failure<IReadOnlyCollection<QuestDraft>>(IntelligenceErrors.InvalidResponse);
         }
 
-        ClassificationPayload? payload = JsonSerializer.Deserialize<ClassificationPayload>(
-            json, JsonSerializerOptions.Web);
+        QuestsPayload? payload = JsonSerializer.Deserialize<QuestsPayload>(json, JsonSerializerOptions.Web);
 
-        return payload is null || !Enum.TryParse(payload.Difficulty, out DifficultyModifier modifier)
-            ? Result.Failure<IReadOnlyCollection<QuestDraft>>(IntelligenceErrors.InvalidResponse)
-            : new ActivityClassification(
-                payload.Action,
-                modifier,
-                Math.Clamp(payload.SuggestedXp, 1, 50),
-                payload.LooksImplausible,
-                payload.Reasoning);
+        if (payload is null || payload.Quests.Count == 0)
+        {
+            return Result.Failure<IReadOnlyCollection<QuestDraft>>(IntelligenceErrors.InvalidResponse);
+        }
+
+        List<QuestDraft> drafts = [];
+
+        foreach (QuestPayload quest in payload.Quests)
+        {
+            if (!Enum.TryParse(quest.Difficulty, out DifficultyModifier difficulty))
+            {
+                return Result.Failure<IReadOnlyCollection<QuestDraft>>(IntelligenceErrors.InvalidResponse);
+            }
+
+            drafts.Add(new QuestDraft(
+                quest.Title,
+                quest.Description,
+                Math.Clamp(quest.XpReward, 20, 60),
+                difficulty));
+        }
+
+        return drafts;
     }
 
-    private sealed record ClassificationPayload(
-        string Action,
-        string Difficulty,
-        int SuggestedXp,
-        bool LooksImplausible,
-        string Reasoning);
+    private sealed record QuestsPayload(IReadOnlyList<QuestPayload> Quests);
+
+    private sealed record QuestPayload(
+        string Title,
+        string Description,
+        int XpReward,
+        string Difficulty);
 }

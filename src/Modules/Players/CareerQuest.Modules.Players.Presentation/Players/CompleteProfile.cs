@@ -45,8 +45,8 @@ internal sealed class CompleteProfile : IEndpoint
         public string? Headline { get; init; }
         public Uri? AvatarUrl { get; init; }
         public CareerStage CareerStage { get; init; }
-        public IReadOnlyCollection<PlayerClassType> Classes { get; init; }
-        public IReadOnlyCollection<PlayerSpecializationType> Specializations { get; init; }
-        public string TimeZoneId { get; init; }
+        public IReadOnlyCollection<PlayerClassType> Classes { get; init; } = [];
+        public IReadOnlyCollection<PlayerSpecializationType> Specializations { get; init; } = [];
+        public string TimeZoneId { get; init; } = null!;
     }
 }

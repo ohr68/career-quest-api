@@ -6,5 +6,5 @@ public sealed class PlayerProfileLink
 
     public ProfilePlatform Platform { get; private set; }
 
-    public string Url { get; private set; }
+    public string Url { get; private set; } = null!;
 }

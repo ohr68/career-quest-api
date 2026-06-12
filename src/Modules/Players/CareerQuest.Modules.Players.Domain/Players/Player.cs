@@ -5,6 +5,7 @@ namespace CareerQuest.Modules.Players.Domain.Players;
 public sealed class Player : Entity
 {
     private readonly List<PlayerClass> _classes = [];
+    private readonly List<PlayerQuest> _quests = [];
     private readonly List<PlayerSpecialization> _specializations = [];
     private readonly List<PlayerTitle> _titles = [];
 
@@ -14,9 +15,9 @@ public sealed class Player : Entity
 
     public Guid Id { get; init; }
 
-    public string DisplayName { get; private set; }
+    public string DisplayName { get; private set; } = null!;
 
-    public string Email { get; private set; }
+    public string Email { get; private set; } = null!;
 
     public Uri? AvatarUrl { get; private set; }
 
@@ -51,6 +52,9 @@ public sealed class Player : Entity
 
     public IReadOnlyCollection<PlayerTitle> Titles =>
         _titles.AsReadOnly();
+
+    public IReadOnlyCollection<PlayerQuest> Quests =>
+        _quests.AsReadOnly();
 
     public PlayerTitle? CurrentTitle =>
         _titles.SingleOrDefault(x => x.IsCurrent);
@@ -290,6 +294,49 @@ public sealed class Player : Entity
                 Streak.CurrentMultiplier)
             );
         }
+    }
+
+    public void AddQuest(
+        string title,
+        string description,
+        int xpReward,
+        DifficultyModifier difficulty,
+        DateTime utcNow,
+        TimeSpan lifetime)
+    {
+        var quest = PlayerQuest.Create(
+            Id,
+            title,
+            description,
+            xpReward,
+            difficulty,
+            utcNow,
+            lifetime);
+
+        _quests.Add(quest);
+
+        Touch(utcNow);
+    }
+
+    public Result CompleteQuest(Guid questId, DateTime utcNow)
+    {
+        PlayerQuest? quest = _quests.SingleOrDefault(x => x.Id == questId);
+
+        if (quest is null)
+        {
+            return Result.Failure(PlayerErrors.QuestNotFound(questId));
+        }
+
+        if (quest.ExpiresAtUtc < utcNow)
+        {
+            return Result.Failure(PlayerErrors.QuestExpired(questId));
+        }
+
+        quest.Complete(utcNow);
+
+        Touch(utcNow);
+
+        return Result.Success();
     }
 
     public void UpdateLastActivity(DateTime utcNow)

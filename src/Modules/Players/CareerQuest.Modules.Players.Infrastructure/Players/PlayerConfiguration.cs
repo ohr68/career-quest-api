@@ -56,6 +56,11 @@ internal sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
             .HasForeignKey<PlayerProgression>(p => p.PlayerId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(p => p.Quests)
+            .WithOne()
+            .HasForeignKey(q => q.PlayerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.OwnsOne(p => p.Statistics, statistics =>
         {
             statistics.ToTable("player_statistics");

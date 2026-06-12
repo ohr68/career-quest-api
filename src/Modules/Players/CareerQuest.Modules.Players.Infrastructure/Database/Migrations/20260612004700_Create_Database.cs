@@ -140,6 +140,32 @@ public partial class Create_Database : Migration
             });
 
         migrationBuilder.CreateTable(
+            name: "player_quests",
+            schema: "players",
+            columns: table => new
+            {
+                id = table.Column<Guid>(type: "uuid", nullable: false),
+                player_id = table.Column<Guid>(type: "uuid", nullable: false),
+                title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                xp_reward = table.Column<int>(type: "integer", nullable: false),
+                difficulty = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                expires_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                completed_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("pk_player_quests", x => x.id);
+                table.ForeignKey(
+                    name: "fk_player_quests_players_player_id",
+                    column: x => x.player_id,
+                    principalSchema: "players",
+                    principalTable: "players",
+                    principalColumn: "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
+
+        migrationBuilder.CreateTable(
             name: "player_specializations",
             schema: "players",
             columns: table => new
@@ -274,6 +300,18 @@ public partial class Create_Database : Migration
             column: "total_xp");
 
         migrationBuilder.CreateIndex(
+            name: "ix_player_quests_expires_at_utc",
+            schema: "players",
+            table: "player_quests",
+            column: "expires_at_utc");
+
+        migrationBuilder.CreateIndex(
+            name: "ix_player_quests_player_id",
+            schema: "players",
+            table: "player_quests",
+            column: "player_id");
+
+        migrationBuilder.CreateIndex(
             name: "ix_player_specializations_specialization_type",
             schema: "players",
             table: "player_specializations",
@@ -332,6 +370,10 @@ public partial class Create_Database : Migration
 
         migrationBuilder.DropTable(
             name: "player_classes",
+            schema: "players");
+
+        migrationBuilder.DropTable(
+            name: "player_quests",
             schema: "players");
 
         migrationBuilder.DropTable(

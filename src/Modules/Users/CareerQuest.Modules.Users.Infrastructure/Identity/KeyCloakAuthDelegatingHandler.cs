@@ -44,11 +44,11 @@ internal sealed class KeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> op
 
         authorizationResponse.EnsureSuccessStatusCode();
 
-        return await authorizationResponse.Content.ReadFromJsonAsync<AuthToken>(cancellationToken);
+        return (await authorizationResponse.Content.ReadFromJsonAsync<AuthToken>(cancellationToken))!;
     }
 
     internal sealed class AuthToken
     {
-        [JsonPropertyName("access_token")] public string AccessToken { get; init; }
+        [JsonPropertyName("access_token")] public string AccessToken { get; init; } = null!;
     }
 }

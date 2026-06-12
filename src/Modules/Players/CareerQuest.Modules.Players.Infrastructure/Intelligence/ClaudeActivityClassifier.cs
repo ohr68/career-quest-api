@@ -5,13 +5,15 @@ using CareerQuest.Common.Domain.Abstractions;
 using CareerQuest.Modules.Players.Application.Abstractions.Intelligence;
 using CareerQuest.Modules.Players.Domain.Intelligence;
 using CareerQuest.Modules.Players.Domain.Players;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CareerQuest.Modules.Players.Infrastructure.Intelligence;
 
 internal sealed class ClaudeActivityClassifier(
     AnthropicClient client,
-    IOptions<AnthropicOptions> options) : IActivityClassifier
+    IOptions<AnthropicOptions> options,
+    ILogger<ClaudeActivityClassifier> logger) : IActivityClassifier
 {
     private const string SystemPrompt =
         """
@@ -61,9 +63,10 @@ internal sealed class ClaudeActivityClassifier(
                 Messages = [new MessageParam { Role = Role.User, Content = description }],
             }, cancellationToken);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            Console.WriteLine(e);
+            logger.LogError(exception, "Activity classification request failed");
+
             return Result.Failure<ActivityClassification>(IntelligenceErrors.Unavailable);
         }
 

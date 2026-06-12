@@ -17,6 +17,8 @@ public sealed class PlayersDbContext(DbContextOptions<PlayersDbContext> options)
 
     internal DbSet<PlayerStreak> PlayerStreaks { get; set; }
 
+    internal DbSet<PlayerQuest> PlayerQuests { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schemas.Players);
@@ -27,5 +29,6 @@ public sealed class PlayersDbContext(DbContextOptions<PlayersDbContext> options)
         modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new PlayerConfiguration());
         modelBuilder.ApplyConfiguration(new PlayerProgressionConfiguration());
+        modelBuilder.ApplyConfiguration(new PlayerQuestConfiguration());
     }
 }

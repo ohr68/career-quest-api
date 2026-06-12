@@ -1,4 +1,4 @@
-﻿using CareerQuest.Common.Application.Caching;
+using CareerQuest.Common.Application.Caching;
 using CareerQuest.Common.Application.Messaging;
 using CareerQuest.Common.Domain.Abstractions;
 using CareerQuest.Modules.Players.Application.Abstractions.Intelligence;
@@ -23,10 +23,16 @@ internal sealed class GetCareerCoachingQueryHandler(
             return cached;
         }
 
-        Player? player = await playerRepository.GetAsync(request.PlayerId, cancellationToken);
+        Player? player = await playerRepository.GetCurrentProgressAsync(request.PlayerId, cancellationToken);
+
         if (player is null)
         {
             return Result.Failure<CoachingResponse>(PlayerErrors.NotFound(request.PlayerId));
+        }
+
+        if (player.Progression is null)
+        {
+            return Result.Failure<CoachingResponse>(PlayerErrors.ProfileNotCompleted(request.PlayerId));
         }
 
         Result<string> advice = await careerCoach.AdviseAsync(BuildContext(player), cancellationToken);
@@ -40,5 +46,21 @@ internal sealed class GetCareerCoachingQueryHandler(
 
         return response;
     }
-}
 
+    private static PlayerCoachingContext BuildContext(Player player)
+    {
+        return new PlayerCoachingContext(
+            player.DisplayName,
+            player.Headline,
+            player.CareerStage,
+            player.Progression!.CurrentLevel,
+            player.Streak?.CurrentDays ?? 0,
+            player.Classes.Select(c => c.ClassType).ToList(),
+            player.Specializations.Select(s => s.SpecializationType).ToList(),
+            player.Progression.Transactions
+                .OrderByDescending(t => t.EarnedAtUtc)
+                .Take(10)
+                .Select(t => t.Action)
+                .ToList());
+    }
+}

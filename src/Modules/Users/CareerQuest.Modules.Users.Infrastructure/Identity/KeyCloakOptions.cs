@@ -2,9 +2,9 @@
 
 internal sealed class KeyCloakOptions
 {
-    public string AdminUrl { get; set; }
-    public string TokenUrl { get; set; }
-    public string ConfidentialClientId { get; set; }
-    public string ConfidentialClientSecret { get; set; }
-    public string PublicClientId { get; set; }
+    public string AdminUrl { get; set; } = null!;
+    public string TokenUrl { get; set; } = null!;
+    public string ConfidentialClientId { get; set; } = null!;
+    public string ConfidentialClientSecret { get; set; } = null!;
+    public string PublicClientId { get; set; } = null!;
 }

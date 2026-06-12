@@ -6,5 +6,7 @@ public interface IPlayerRepository
 
     Task<Player?> GetCurrentProgressAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<Player?> GetWithQuestsAsync(Guid id, CancellationToken cancellationToken = default);
+
     void Insert(Player user);
 }

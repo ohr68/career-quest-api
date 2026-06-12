@@ -38,7 +38,7 @@ internal sealed class LogXp : IEndpoint
 
     internal sealed class Request
     {
-        public string Action { get; init; }
+        public string Action { get; init; } = null!;
         public int Amount { get; init; }
         public DifficultyModifier Modifier { get; init; }
         public string? Notes { get; init; }

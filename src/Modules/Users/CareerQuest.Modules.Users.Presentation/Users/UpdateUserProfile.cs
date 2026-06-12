@@ -30,8 +30,8 @@ internal sealed class UpdateUserProfile : IEndpoint
 
     internal sealed class Request
     {
-        public string FirstName { get; init; }
+        public string FirstName { get; init; } = null!;
 
-        public string LastName { get; init; }
+        public string LastName { get; init; } = null!;
     }
 }

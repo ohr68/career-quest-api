@@ -28,8 +28,8 @@ internal sealed class AuthenticateUser : IEndpoint
 
     internal sealed class Request
     {
-        public string Email { get; init; }
+        public string Email { get; init; } = null!;
 
-        public string Password { get; init; }
+        public string Password { get; init; } = null!;
     }
 }

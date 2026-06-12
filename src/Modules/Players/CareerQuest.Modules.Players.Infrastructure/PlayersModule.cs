@@ -70,6 +70,8 @@ public static class PlayersModule
 
             services.ConfigureOptions<ConfigureProcessInboxJob>();
 
+            services.Configure<AnthropicOptions>(configuration.GetRequiredSection("Players:Anthropic"));
+
             services.AddSingleton(sp => new AnthropicClient
             {
                 ApiKey = sp.GetRequiredService<IOptions<AnthropicOptions>>().Value.ApiKey,

@@ -18,6 +18,14 @@ internal sealed class PlayerRepository(PlayersDbContext context) : IPlayerReposi
             .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
+    public async Task<Player?> GetWithQuestsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await context.Players
+            .Include(p => p.Progression)
+            .Include(p => p.Quests)
+            .SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
+
     public void Insert(Player user)
     {
         context.Players.Add(user);

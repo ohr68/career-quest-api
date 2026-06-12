@@ -4,12 +4,14 @@ namespace CareerQuest.Modules.Players.Domain.Players;
 
 public sealed class PlayerQuest : Entity
 {
-    private PlayerQuest() { }
+    private PlayerQuest()
+    {
+    }
 
     public Guid Id { get; init; }
     public Guid PlayerId { get; private set; }
-    public string Title { get; private set; }
-    public string Description { get; private set; }
+    public string Title { get; private set; } = null!;
+    public string Description { get; private set; } = null!;
     public int XpReward { get; private set; }
     public DifficultyModifier Difficulty { get; private set; }
     public DateTime ExpiresAtUtc { get; private set; }

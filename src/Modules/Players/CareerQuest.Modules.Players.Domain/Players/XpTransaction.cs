@@ -8,7 +8,7 @@ public sealed class XpTransaction
 
     public Guid PlayerId { get; init; }
 
-    public string Action { get; init; }
+    public string Action { get; init; } = null!;
 
     public int Amount { get; init; }
 
@@ -24,9 +24,8 @@ public sealed class XpTransaction
         int amount,
         float multiplier,
         string? notes,
-        DateTime utcNow)
-    {
-        return new XpTransaction
+        DateTime utcNow) =>
+        new()
         {
             PlayerId = playerId,
             Action = action,
@@ -35,5 +34,4 @@ public sealed class XpTransaction
             EarnedAtUtc = utcNow,
             Notes = notes,
         };
-    }
 }
